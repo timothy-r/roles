@@ -14,10 +14,6 @@ class ErrorHandlerProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-    }
-
-    public function boot(Application $app)
-    {
         $app->error(function (Exception $e) use($app) {
 
             $app['logger']->addError($e->getMessage());

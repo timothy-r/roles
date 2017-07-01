@@ -18,10 +18,6 @@ class RouteProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-    }
-
-    public function boot(Application $app)
-    {
         /**
          * Respond with a list of roles
          */
@@ -37,7 +33,7 @@ class RouteProvider implements ServiceProviderInterface
         /**
          * Access a role
          */
-        $app->get("/roles/{role}", function(Request $req, $path) use ($app){
+        $app->get("/roles/{role}", function(Request $req, $role) use ($app){
 
             $app['logger']->info("Getting '$role'");
 
@@ -49,7 +45,7 @@ class RouteProvider implements ServiceProviderInterface
         /**
          * Add a role
          */
-        $app->put("/roles/{role}", function(Request $req, $path) use ($app) {
+        $app->put("/roles/{role}", function(Request $req, $role) use ($app) {
 
             $app['logger']->info("Setting role '$role'");
 
@@ -62,7 +58,7 @@ class RouteProvider implements ServiceProviderInterface
         /**
          * Removes a role
          */
-        $app->delete("/roles/{role}", function($path) use ($app) {
+        $app->delete("/roles/{role}", function($role) use ($app) {
 
             $app['logger']->info("Removing role '$role'");
 
