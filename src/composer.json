@@ -1,0 +1,24 @@
+{
+    "name": "timrodger/roles",
+    "description": "Roles service",
+    "require": {
+        "silex/silex": "~2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2"
+    },
+    "authors": [
+        {
+            "name": "Tim Rodger",
+            "email": "tim.rodger@gmail.com"
+        }
+    ],
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {
+            "Ace\\": "."
+        }
+    }
+}
