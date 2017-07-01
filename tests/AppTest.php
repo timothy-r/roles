@@ -16,6 +16,16 @@ class AppTest extends WebTestCase
         return require __DIR__.'/../src/app.php';
     }
 
+    public function testGetFailsForMissingRole()
+    {
+        $name = 'app.admin';
+        $this->givenAClient();
+
+        $this->client->request('GET', '/roles/' . $name);
+
+        $this->thenTheResponseIs404();
+    }
+
     public function testPutAddsARole()
     {
         $name = 'app.admin';
