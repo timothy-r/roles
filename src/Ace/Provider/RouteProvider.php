@@ -2,7 +2,9 @@
 namespace Ace\Provider;
 
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,7 +16,7 @@ class RouteProvider implements ServiceProviderInterface
     /**
      * @param Application $app
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
     }
 

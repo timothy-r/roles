@@ -1,7 +1,9 @@
 <?php namespace Ace\Provider;
 
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
 
@@ -10,7 +12,7 @@ use Exception;
  */
 class ErrorHandlerProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
     }
 
