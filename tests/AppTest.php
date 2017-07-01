@@ -26,6 +26,17 @@ class AppTest extends WebTestCase
         $this->thenTheResponseIs404();
     }
 
+    public function testGetSucceedsForRole()
+    {
+        $name = 'app.test';
+        $this->givenAClient();
+        $this->givenARoleExists($name);
+
+        $this->client->request('GET', '/roles/' . $name);
+
+        $this->thenTheResponseIsSuccess();
+    }
+
     public function testPutAddsARole()
     {
         $name = 'app.admin';
@@ -34,6 +45,25 @@ class AppTest extends WebTestCase
         $this->client->request('PUT', '/roles/' . $name);
 
         $this->thenTheResponseIsSuccess();
+
+        $this->client->request('GET', '/roles/' . $name);
+
+        $this->thenTheResponseIsSuccess();
+    }
+
+    public function testDeleteRemovesRole()
+    {
+        $name = 'app.news-editor';
+        $this->givenAClient();
+        $this->givenARoleExists($name);
+
+        $this->client->request('DELETE', '/roles/' . $name);
+
+        $this->thenTheResponseIsSuccess();
+
+        $this->client->request('GET', '/roles/' . $name);
+
+        $this->thenTheResponseIs404();
     }
 
     public function testDeleteAlwaysRespondsWithSuccess()
@@ -49,11 +79,20 @@ class AppTest extends WebTestCase
     {
         $this->givenAClient();
 
+        $roles = ['app.user', 'app.admin','app.editor', 'app.super'];
+        foreach($roles as $name) {
+            $this->givenARoleExists($name);
+        }
+
         $this->client->request('GET', '/roles');
 
         $this->thenTheResponseIsSuccess();
 
-        $this->assertResponseContents(json_encode([], JSON_UNESCAPED_SLASHES));
+        $actual = json_decode($this->client->getResponse()->getContent(), true);
+
+        foreach($actual as $actual_name){
+            $this->assertTrue(in_array($actual_name, $roles));
+        }
     }
 
     private function givenAClient()
@@ -63,7 +102,7 @@ class AppTest extends WebTestCase
 
     private function givenARoleExists($name)
     {
-        $this->client->request('PUT', $name);
+        $this->client->request('PUT', '/roles/' . $name);
     }
 
     private function thenTheResponseIsSuccess()

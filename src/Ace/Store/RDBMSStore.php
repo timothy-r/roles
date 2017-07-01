@@ -2,11 +2,13 @@
 namespace Ace\Store;
 
 use Ace\Store\NotFoundException;
+use Ace\Store\StoreInterface;
 
 /**
  * @author timrodger
+ * Date: 01/07/2017
  */
-class Memory implements StoreInterface
+class RDBMSStore implements StoreInterface
 {
     /**
      * @var array
@@ -19,7 +21,6 @@ class Memory implements StoreInterface
      */
     public function set($role)
     {
-        $this->data[$role] = $role;
     }
 
     /**
@@ -27,11 +28,6 @@ class Memory implements StoreInterface
      */
     public function get($role)
     {
-        if (isset($this->data[$role])) {
-            return $this->data[$role];
-        } else {
-            throw new NotFoundException("Role '$role' not found");
-        }
     }
 
     /**
@@ -39,7 +35,6 @@ class Memory implements StoreInterface
      */
     public function listAll()
     {
-        return array_keys($this->data);
     }
 
     /**
@@ -47,6 +42,5 @@ class Memory implements StoreInterface
      */
     public function delete($role)
     {
-        unset($this->data[$role]);
     }
 }
