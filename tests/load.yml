@@ -1,0 +1,51 @@
+config:
+  target: 'http://192.168.59.103:49300'
+  phases:
+    -
+      duration: 120
+      arrivalRate: 1
+      rampTo: 10
+      name: "1 - 10"
+    -
+      pause: 300
+    -
+      duration: 120
+      arrivalRate: 1
+      rampTo: 15
+      name: "1 - 15"
+    -
+      pause: 300
+    -
+      duration: 120
+      arrivalRate: 1
+      rampTo: 20
+      name: "1 - 20"
+    -
+      pause: 300
+    -
+      duration: 300
+      arrivalRate: 1
+      rampTo: 30
+      name: "1 - 30"
+
+  payload:
+    path: "roles.csv"
+    fields:
+      - "name"
+    order: "sequence"
+
+scenarios:
+  -
+    flow:
+      -
+        put:
+          url: "/roles/{{ name }}"
+      -
+        get:
+          url: "/roles/{{ name }}"
+      -
+        get:
+          url: "/roles"
+      -
+        delete:
+          url: "/roles/{{ name }}"
