@@ -10,6 +10,6 @@ class UnavailableException extends Exception {
 
     public function __construct($message = "", $code = 0, Exception $previous = null)
     {
-        parent::__construct($message, 500, $previous);
+        parent::__construct($message, 503, $previous);
     }
 }

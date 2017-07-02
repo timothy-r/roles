@@ -23,7 +23,7 @@ class UnavailableAppTest extends WebTestCase
 
         $this->client->request('GET', '/roles/' . $name);
 
-        $this->thenTheResponseIs500();
+        $this->thenTheResponseIs503();
     }
 
     public function testPutFailsWhenUnavailable()
@@ -33,7 +33,7 @@ class UnavailableAppTest extends WebTestCase
 
         $this->client->request('PUT', '/roles/' . $name);
 
-        $this->thenTheResponseIs500();
+        $this->thenTheResponseIs503();
     }
 
     public function testDeleteFailsWhenUnavailable()
@@ -43,7 +43,7 @@ class UnavailableAppTest extends WebTestCase
 
         $this->client->request('DELETE', '/roles/' . $name);
 
-        $this->thenTheResponseIs500();
+        $this->thenTheResponseIs503();
 
     }
 
@@ -53,7 +53,7 @@ class UnavailableAppTest extends WebTestCase
 
         $this->client->request('GET', '/roles');
 
-        $this->thenTheResponseIs500();
+        $this->thenTheResponseIs503();
 
     }
 
@@ -62,9 +62,9 @@ class UnavailableAppTest extends WebTestCase
         $this->client = $this->createClient();
     }
 
-    private function thenTheResponseIs500()
+    private function thenTheResponseIs503()
     {
-        $this->assertSame(500, $this->client->getResponse()->getStatusCode());
+        $this->assertSame(503, $this->client->getResponse()->getStatusCode());
     }
 
 
