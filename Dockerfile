@@ -9,6 +9,7 @@ RUN apt-get update -qq && \
     nginx \
     php7.0 \
     php7.0-pgsql \
+    php7.0-mysql \
     php7.0-fpm \
     php7.0-xml \
     php7.0-mbstring \

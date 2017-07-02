@@ -12,7 +12,7 @@ class UnavailableAppTest extends WebTestCase
 
     public function createApplication()
     {
-        putenv('STORE_DSN=UNAVAILABLE');
+        putenv('RDS_HOSTNAME=UNAVAILABLE');
         return require __DIR__.'/../src/app.php';
     }
 

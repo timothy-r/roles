@@ -41,7 +41,10 @@ class Factory
             return new UnavailableStore();
         } else {
             // create a PDO object
-            $db = new PDO();
+            $user = $this->config->getStoreUserName();
+            $pass = $this->config->getStorePassword();
+
+            $db = new PDO($dsn, $user, $pass);
             // configure PDO to throw exceptions
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return new RDBMSStore($db);
