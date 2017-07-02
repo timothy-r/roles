@@ -1,7 +1,7 @@
 <?php
 namespace Ace\Store;
 
-use Ace\Store\NotFoundException;
+use Ace\Store\UnavailableException;
 use Ace\Store\StoreInterface;
 use PDO;
 use PDOException;
