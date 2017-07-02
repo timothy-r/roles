@@ -35,7 +35,7 @@ class RDBMSStore implements StoreInterface
             $sql = "INSERT INTO 'roles' (name) VALUES('$role');";
             $this->db->exec($sql);
         } catch (PDOException $ex){
-            throw new UnavailableException($ex->getMessage(), 500, $ex);
+            throw new UnavailableException($ex->getMessage(), 503, $ex);
         }
     }
 
@@ -51,7 +51,7 @@ class RDBMSStore implements StoreInterface
                 return $results[0];
             }
         } catch (PDOException $ex){
-            throw new UnavailableException($ex->getMessage(), 500, $ex);
+            throw new UnavailableException($ex->getMessage(), 503, $ex);
         }
     }
 
@@ -68,7 +68,7 @@ class RDBMSStore implements StoreInterface
             }
             return $roles;
         } catch (PDOException $ex){
-            throw new UnavailableException($ex->getMessage(), 500, $ex);
+            throw new UnavailableException($ex->getMessage(), 503, $ex);
         }
     }
 
@@ -81,7 +81,7 @@ class RDBMSStore implements StoreInterface
             $sql = "DELETE FROM 'roles' WHERE name = $role;";
             $this->db->exec($sql);
         } catch (PDOException $ex){
-            throw new UnavailableException($ex->getMessage(), 500, $ex);
+            throw new UnavailableException($ex->getMessage(), 503, $ex);
         }
     }
 }
