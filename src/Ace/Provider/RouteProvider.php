@@ -31,7 +31,7 @@ class RouteProvider implements ServiceProviderInterface
         });
 
         /**
-         * Access a role
+         * Access a role - test it exists
          */
         $app->get("/roles/{role}", function(Request $req, $role) use ($app){
 
@@ -51,7 +51,7 @@ class RouteProvider implements ServiceProviderInterface
 
             $app['role.store']->set($role);
 
-            return new Response('', 200);
+            return new Response(json_encode(["role" => $role], JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
 
         });
 

@@ -2,6 +2,7 @@
 namespace Ace\Store;
 
 use Ace\Store\UnavailableException;
+use Ace\Store\NotFoundException;
 use Ace\Store\StoreInterface;
 use PDO;
 use PDOException;
@@ -32,7 +33,7 @@ class RDBMSStore implements StoreInterface
     public function set($role)
     {
         try {
-            $sql = "INSERT INTO 'roles' (name) VALUES('$role');";
+            $sql = "INSERT INTO roles (name) VALUES('$role');";
             $this->db->exec($sql);
         } catch (PDOException $ex){
             throw new UnavailableException($ex->getMessage(), 503, $ex);
@@ -45,10 +46,12 @@ class RDBMSStore implements StoreInterface
     public function get($role)
     {
         try {
-            $sql = "SELECT * FROM 'roles' WHERE name = $role;";
+            $sql = "SELECT name FROM roles WHERE name = '$role';";
             $results = $this->db->query($sql);
             if (count($results)){
                 return $results[0];
+            } else {
+                throw new NotFoundException;
             }
         } catch (PDOException $ex){
             throw new UnavailableException($ex->getMessage(), 503, $ex);
@@ -62,7 +65,7 @@ class RDBMSStore implements StoreInterface
     {
         try {
             $roles = [];
-            $sql = "SELECT 'name'' FROM 'roles';";
+            $sql = "SELECT name FROM 'roles';";
             foreach($this->db->query($sql) as $result) {
                 $roles[] = $result['name'];
             }
@@ -78,7 +81,7 @@ class RDBMSStore implements StoreInterface
     public function delete($role)
     {
         try {
-            $sql = "DELETE FROM 'roles' WHERE name = $role;";
+            $sql = "DELETE FROM roles WHERE name = $role;";
             $this->db->exec($sql);
         } catch (PDOException $ex){
             throw new UnavailableException($ex->getMessage(), 503, $ex);
