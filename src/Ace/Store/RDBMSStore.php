@@ -3,6 +3,8 @@ namespace Ace\Store;
 
 use Ace\Store\NotFoundException;
 use Ace\Store\StoreInterface;
+use PDO;
+use PDOException;
 
 /**
  * @author timrodger
@@ -11,9 +13,17 @@ use Ace\Store\StoreInterface;
 class RDBMSStore implements StoreInterface
 {
     /**
-     * @var array
+     * @var PDO
      */
-    private $data = [];
+    private $db;
+
+    /**
+     * @param PDO $db
+     */
+    public function __construct(PDO $db)
+    {
+        $this->db = $db;
+    }
 
     /**
      *
@@ -21,6 +31,12 @@ class RDBMSStore implements StoreInterface
      */
     public function set($role)
     {
+        try {
+            $sql = "INSERT INTO 'roles' (name) VALUES('$role');";
+            $this->db->exec($sql);
+        } catch (PDOException $ex){
+            throw new UnavailableException($ex->getMessage(), 500, $ex);
+        }
     }
 
     /**
@@ -28,13 +44,32 @@ class RDBMSStore implements StoreInterface
      */
     public function get($role)
     {
+        try {
+            $sql = "SELECT * FROM 'roles' WHERE name = $role;";
+            $results = $this->db->query($sql);
+            if (count($results)){
+                return $results[0];
+            }
+        } catch (PDOException $ex){
+            throw new UnavailableException($ex->getMessage(), 500, $ex);
+        }
     }
 
     /**
-     * @return array
+     * @return array of role names
      */
     public function listAll()
     {
+        try {
+            $roles = [];
+            $sql = "SELECT 'name'' FROM 'roles';";
+            foreach($this->db->query($sql) as $result) {
+                $roles[] = $result['name'];
+            }
+            return $roles;
+        } catch (PDOException $ex){
+            throw new UnavailableException($ex->getMessage(), 500, $ex);
+        }
     }
 
     /**
@@ -42,5 +77,11 @@ class RDBMSStore implements StoreInterface
      */
     public function delete($role)
     {
+        try {
+            $sql = "DELETE FROM 'roles' WHERE name = $role;";
+            $this->db->exec($sql);
+        } catch (PDOException $ex){
+            throw new UnavailableException($ex->getMessage(), 500, $ex);
+        }
     }
 }

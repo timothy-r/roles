@@ -5,6 +5,8 @@ use Ace\Configuration;
 use Ace\Store\Memory as MemoryStore;
 use Ace\Store\Unavailable as UnavailableStore;
 
+use PDO;
+
 /**
  * @author timrodger
  */
@@ -38,7 +40,11 @@ class Factory
         } else if ('UNAVAILABLE' == $dsn) {
             return new UnavailableStore();
         } else {
-            return new RDBMSStore($dsn);
+            // create a PDO object
+            $db = new PDO();
+            // configure PDO to throw exceptions
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return new RDBMSStore($db);
         }
     }
 }
