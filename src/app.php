@@ -13,7 +13,7 @@ $app = new Application();
 
 $app->register(new MonologServiceProvider());
 $app['monolog.logfile'] = "php://stdout";
-$app['monolog.name'] = 'render';
+$app['monolog.name'] = 'roles';
 
 $app->register(new ErrorHandlerProvider());
 
