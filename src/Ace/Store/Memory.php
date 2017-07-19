@@ -54,6 +54,18 @@ class Memory implements StoreInterface
 
     /**
      * @param $role
+     */
+    public function getMembers($role)
+    {
+        if (isset($this->data[$role])) {
+            return array_keys($this->data[$role]);
+        } else {
+            throw new NotFoundException("Role '$role' not found");
+        }
+    }
+
+    /**
+     * @param $role
      * @param $member
      */
     public function addMember($role, $member)
@@ -74,8 +86,9 @@ class Memory implements StoreInterface
     {
         if (isset($this->data[$role])) {
             return in_array($member, $this->data[$role]);
+        } else {
+            throw new NotFoundException("Role '$role' not found");
         }
-        return false;
     }
 
     /**

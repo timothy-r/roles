@@ -27,7 +27,6 @@ class RouteProvider implements ServiceProviderInterface
 
             $roles = $app['role.store']->listAll();
             return new Response(json_encode($roles, JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
-
         });
 
         /**
@@ -39,7 +38,6 @@ class RouteProvider implements ServiceProviderInterface
 
             $role = $app['role.store']->get($role);
             return new Response(json_encode([$role], JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
-
         });
 
         /**
@@ -52,7 +50,6 @@ class RouteProvider implements ServiceProviderInterface
             $app['role.store']->set($role);
 
             return new Response(json_encode(["role" => $role], JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
-
         });
 
         /**
@@ -65,7 +62,22 @@ class RouteProvider implements ServiceProviderInterface
             $app['role.store']->delete($role);
 
             return new Response('', 200);
+        });
 
+        /**
+         * List role members
+         */
+        $app->get("/roles/{role}/members", function(Request $req, $role) use ($app) {
+
+            $app['logger']->info("List members of role '$role'");
+
+            $members = $app['role.store']->getMembers($role);
+
+            return new Response(
+                json_encode($members, JSON_UNESCAPED_SLASHES),
+                200,
+                ["Content-Type" => 'application/json']
+            );
         });
 
         /**
@@ -82,7 +94,6 @@ class RouteProvider implements ServiceProviderInterface
                 200,
                 ["Content-Type" => 'application/json']
             );
-
         });
 
         /**
@@ -117,7 +128,6 @@ class RouteProvider implements ServiceProviderInterface
                 200,
                 ["Content-Type" => 'application/json']
             );
-
         });
     }
 }

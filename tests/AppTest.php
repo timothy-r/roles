@@ -141,6 +141,26 @@ class AppTest extends WebTestCase
         $this->thenTheResponseIs404();
     }
 
+
+    public function testListRoleMembers()
+    {
+        $role = 'app:cool-guys.editor';
+        $this->givenAClient();
+        $this->givenARoleExists($role);
+
+        $this->client->request('GET', '/roles/' . $role . '/members');
+        $this->thenTheResponseIsSuccess();
+    }
+
+    public function testListRoleMembersFailsWhenRoleIsMissing()
+    {
+        $role = 'app:cool-guys.editor';
+        $this->givenAClient();
+
+        $this->client->request('GET', '/roles/' . $role . '/members');
+        $this->thenTheResponseIs404();
+    }
+
     private function givenAClient()
     {
         $this->client = $this->createClient();

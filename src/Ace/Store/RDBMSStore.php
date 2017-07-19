@@ -98,6 +98,12 @@ class RDBMSStore implements StoreInterface
         }
     }
 
+    /**
+     * @param $role
+     */
+    public function getMembers($role)
+    {
+    }
 
     /**
      * @param $role
