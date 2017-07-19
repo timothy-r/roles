@@ -97,4 +97,23 @@ class RDBMSStore implements StoreInterface
             throw new UnavailableException($ex->getMessage(), 503, $ex);
         }
     }
+
+
+    /**
+     * @param $role
+     * @param $member
+     */
+    public function addMember($role, $member)
+    {
+
+    }
+
+    /**
+     * @param $role
+     * @param $member
+     */
+    public function removeMember($role, $member)
+    {
+
+    }
 }

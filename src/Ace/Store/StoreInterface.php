@@ -15,4 +15,8 @@ interface StoreInterface
     public function listAll();
 
     public function delete($role);
+
+    public function addMember($role, $member);
+
+    public function removeMember($role, $member);
 }

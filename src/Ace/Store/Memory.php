@@ -49,4 +49,22 @@ class Memory implements StoreInterface
     {
         unset($this->data[$role]);
     }
+
+    /**
+     * @param $role
+     * @param $member
+     */
+    public function addMember($role, $member)
+    {
+
+    }
+
+    /**
+     * @param $role
+     * @param $member
+     */
+    public function removeMember($role, $member)
+    {
+
+    }
 }
