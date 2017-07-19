@@ -27,7 +27,7 @@ class Factory
 
     /**
      * If an in-memory or unavailable store has been explicitly configured
-     * then use that, otherwise use redis
+     * then use that, otherwise use RDBMS
      *
      * @return StoreInterface
      */
