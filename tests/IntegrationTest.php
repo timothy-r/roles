@@ -18,24 +18,20 @@ class IntegrationTest extends WebTestCase
 
     public function testGetFailsForMissingRole()
     {
-        $name = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
         $this->givenAClient();
 
-        $this->client->request('GET', '/roles/' . $name);
-
-        $this->thenTheResponseIs404();
+        $this->assertRoleDoesNotExist($role);
     }
 
     public function testGetSucceedsForRole()
     {
-        $name = 'app.test.'  . rand(0, PHP_INT_MAX);
+        $role = 'app.test.'  . rand(0, PHP_INT_MAX);
 
         $this->givenAClient();
-        $this->givenARoleExists($name);
+        $this->givenARoleExists($role);
 
-        $this->client->request('GET', '/roles/' . $name);
-
-        $this->thenTheResponseIsSuccess();
+        $this->assertRoleExists($role);
     }
 
     public function testListRespondsWithArrayOfRoles()
@@ -48,43 +44,153 @@ class IntegrationTest extends WebTestCase
 
         $actual = json_decode($this->client->getResponse()->getContent(), true);
 
-        var_dump($actual);
-
         $this->assertTrue(is_array($actual));
     }
 
     public function testDeleteRemovesRole()
     {
-        $name = 'app.news-editor';
+        $role = 'app.news-editor';
         $this->givenAClient();
-        $this->givenARoleExists($name);
+        $this->givenARoleExists($role);
 
-        $this->client->request('DELETE', '/roles/' . $name);
+        $this->client->request('DELETE', '/roles/' . $role);
 
         $this->thenTheResponseIsSuccess();
 
-        $this->client->request('GET', '/roles/' . $name);
-
-        $this->thenTheResponseIs404();
+        $this->assertRoleDoesNotExist($role);
     }
 
     public function testPutAddsARole()
     {
-        $name = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
         $this->givenAClient();
 
-        $this->client->request('PUT', '/roles/' . $name);
+        $this->client->request('PUT', '/roles/' . $role);
 
         $this->thenTheResponseIsSuccess();
 
-        $this->client->request('PUT', '/roles/' . $name);
+        $this->assertRoleExists($role);
+    }
+
+    public function testGetMembers()
+    {
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+
+        $this->givenARoleExists($role);
+
+        $this->client->request('GET', '/roles/' . $role . '/members');
+
+        $this->thenTheResponseIsSuccess();
+    }
+
+    public function testGetMembersFailsForMissingRole()
+    {
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+
+        $this->client->request('GET', '/roles/' . $role . '/members');
+
+        $this->thenTheResponseIs404();
+    }
+
+    public function testAddMemberToRole()
+    {
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+        $this->givenARoleExists($role);
+
+        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
 
         $this->thenTheResponseIsSuccess();
 
+        $this->assertMemberBelongsToRole($role, $member);
 
-        $this->client->request('GET', '/roles/' . $name);
+        // adding it a second time also succeeds
+        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
 
         $this->thenTheResponseIsSuccess();
+    }
+
+    public function testMemberBelongsToRole(){
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+        $this->givenARoleExists($role);
+
+        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
+
+        $this->thenTheResponseIsSuccess();
+
+        $this->assertMemberBelongsToRole($role, $member);
+    }
+
+    public function testMemberBelongsToRoleFailsWhenMissing(){
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+        $this->givenARoleExists($role);
+
+        $this->assertMemberDoesNotBelongToRole($role, $member);
+    }
+
+    public function testRemoveMemberFromRole()
+    {
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+
+        $this->givenARoleExists($role);
+
+        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
+
+        $this->thenTheResponseIsSuccess();
+
+        $this->client->request('DELETE', '/roles/' . $role . '/members/' . $member);
+
+        $this->thenTheResponseIsSuccess();
+
+        $this->assertMemberDoesNotBelongToRole($role, $member);
+    }
+
+    public function testRemoveMemberFromRoleFailsForMissingRole()
+    {
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+
+        $this->client->request('DELETE', '/roles/' . $role . '/members/' . $member);
+
+        $this->thenTheResponseIs404();
+    }
+
+    private function assertRoleExists($role)
+    {
+        $this->client->request('GET', '/roles/' . $role);
+
+        $this->thenTheResponseIsSuccess();
+    }
+
+    private function assertRoleDoesNotExist($role)
+    {
+        $this->client->request('GET', '/roles/' . $role);
+
+        $this->thenTheResponseIs404();
+    }
+
+    private function assertMemberBelongsToRole($role, $member)
+    {
+        $this->client->request('GET', '/roles/' . $role . '/members/' . $member);
+
+        $this->thenTheResponseIsSuccess();
+    }
+
+    private function assertMemberDoesNotBelongToRole($role, $member)
+    {
+        $this->client->request('GET', '/roles/' . $role . '/members/' . $member);
+
+        $this->thenTheResponseIs404();
     }
 
     private function givenAClient()
@@ -102,9 +208,9 @@ class IntegrationTest extends WebTestCase
         $this->assertSame(404, $this->client->getResponse()->getStatusCode());
     }
 
-    private function givenARoleExists($name)
+    private function givenARoleExists($role)
     {
-        $this->client->request('PUT', '/roles/' . $name);
+        $this->client->request('PUT', '/roles/' . $role);
     }
 
 }

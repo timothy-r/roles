@@ -20,10 +20,12 @@ $app->register(new StoreProvider());
 $app->register(new RouteProvider());
 
 // debug env vars during development
+/*
 $app['logger']->info("RDS_HOSTNAME = " . getenv('RDS_HOSTNAME'));
 $app['logger']->info("RDS_PORT = " . getenv('RDS_PORT'));
 $app['logger']->info("RDS_DB_NAME = " . getenv('RDS_DB_NAME'));
 $app['logger']->info("RDS_USERNAME = " . getenv('RDS_USERNAME'));
 $app['logger']->info("RDS_PASSWORD = " . getenv('RDS_PASSWORD'));
+*/
 
 return $app;

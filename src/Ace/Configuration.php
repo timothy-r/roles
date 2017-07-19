@@ -19,7 +19,8 @@ class Configuration
             return $host;
         }
 
-        return "mysql:host=$host;port=$port;dbname=$db_name";
+        // need to configure db type too
+        return "pgsql:host=$host;port=$port;dbname=$db_name";
     }
 
     /**

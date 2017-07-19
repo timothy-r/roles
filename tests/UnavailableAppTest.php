@@ -13,6 +13,8 @@ class UnavailableAppTest extends WebTestCase
     public function createApplication()
     {
         putenv('RDS_HOSTNAME=UNAVAILABLE');
+        putenv('RDS_PORT=');
+        putenv('RDS_DB_NAME=');
         return require __DIR__.'/../src/app.php';
     }
 

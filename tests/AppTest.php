@@ -13,6 +13,8 @@ class AppTest extends WebTestCase
     public function createApplication()
     {
         putenv('RDS_HOSTNAME=MEMORY');
+        putenv('RDS_PORT=');
+        putenv('RDS_DB_NAME=');
         return require __DIR__.'/../src/app.php';
     }
 
