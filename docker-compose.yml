@@ -2,3 +2,6 @@ roles:
   build: .
   ports:
     - "49300:80"
+
+postgres:
+  image: sameersbn/postgresql

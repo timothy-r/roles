@@ -103,6 +103,18 @@ class RDBMSStore implements StoreInterface
      */
     public function getMembers($role)
     {
+        try {
+            $members = [];
+
+            $sql = "SELECT name FROM members WHERE id in (SELECT member_id from roles_members where role_id = (select id from roles where name = '$role')); ";
+            foreach($this->db->query($sql) as $result) {
+                $members[] = $result['name'];
+            }
+            return $members;
+        } catch (PDOException $ex){
+            throw new UnavailableException($ex->getMessage(), 503, $ex);
+        }
+
     }
 
     /**
