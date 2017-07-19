@@ -1,24 +1,24 @@
 <?php
 
+
 use Silex\WebTestCase;
 
 /**
  * @author timrodger
  * Date: 18/03/15
  */
-class AppTest extends WebTestCase
+class IntegrationTest extends WebTestCase
 {
     private $client;
 
     public function createApplication()
     {
-        putenv('RDS_HOSTNAME=MEMORY');
         return require __DIR__.'/../src/app.php';
     }
 
     public function testGetFailsForMissingRole()
     {
-        $name = 'app.admin';
+        $name = 'app.admin.' . rand(0, PHP_INT_MAX);
         $this->givenAClient();
 
         $this->client->request('GET', '/roles/' . $name);
@@ -28,7 +28,8 @@ class AppTest extends WebTestCase
 
     public function testGetSucceedsForRole()
     {
-        $name = 'app.test';
+        $name = 'app.test.'  . rand(0, PHP_INT_MAX);
+
         $this->givenAClient();
         $this->givenARoleExists($name);
 
@@ -37,18 +38,19 @@ class AppTest extends WebTestCase
         $this->thenTheResponseIsSuccess();
     }
 
-    public function testPutAddsARole()
+    public function testListRespondsWithArrayOfRoles()
     {
-        $name = 'app.admin';
         $this->givenAClient();
 
-        $this->client->request('PUT', '/roles/' . $name);
+        $this->client->request('GET', '/roles');
 
         $this->thenTheResponseIsSuccess();
 
-        $this->client->request('GET', '/roles/' . $name);
+        $actual = json_decode($this->client->getResponse()->getContent(), true);
 
-        $this->thenTheResponseIsSuccess();
+        var_dump($actual);
+
+        $this->assertTrue(is_array($actual));
     }
 
     public function testDeleteRemovesRole()
@@ -66,43 +68,28 @@ class AppTest extends WebTestCase
         $this->thenTheResponseIs404();
     }
 
-    public function testDeleteAlwaysRespondsWithSuccess()
+    public function testPutAddsARole()
     {
+        $name = 'app.admin.' . rand(0, PHP_INT_MAX);
         $this->givenAClient();
 
-        $this->client->request('DELETE', '/roles/app.super');
-
-        $this->thenTheResponseIsSuccess();
-    }
-
-    public function testListRespondsWithArrayOfRoles()
-    {
-        $this->givenAClient();
-
-        $roles = ['app.user', 'app.admin','app.editor', 'app.super'];
-        foreach($roles as $name) {
-            $this->givenARoleExists($name);
-        }
-
-        $this->client->request('GET', '/roles');
+        $this->client->request('PUT', '/roles/' . $name);
 
         $this->thenTheResponseIsSuccess();
 
-        $actual = json_decode($this->client->getResponse()->getContent(), true);
+        $this->client->request('PUT', '/roles/' . $name);
 
-        foreach($actual as $actual_name){
-            $this->assertTrue(in_array($actual_name, $roles));
-        }
+        $this->thenTheResponseIsSuccess();
+
+
+        $this->client->request('GET', '/roles/' . $name);
+
+        $this->thenTheResponseIsSuccess();
     }
 
     private function givenAClient()
     {
         $this->client = $this->createClient();
-    }
-
-    private function givenARoleExists($name)
-    {
-        $this->client->request('PUT', '/roles/' . $name);
     }
 
     private function thenTheResponseIsSuccess()
@@ -115,8 +102,9 @@ class AppTest extends WebTestCase
         $this->assertSame(404, $this->client->getResponse()->getStatusCode());
     }
 
-    protected function assertResponseContents($expected_body)
+    private function givenARoleExists($name)
     {
-        $this->assertSame($expected_body, $this->client->getResponse()->getContent());
+        $this->client->request('PUT', '/roles/' . $name);
     }
+
 }

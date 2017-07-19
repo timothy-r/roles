@@ -5,6 +5,8 @@ use Ace\Configuration;
 use Ace\Store\Memory as MemoryStore;
 use Ace\Store\Unavailable as UnavailableStore;
 
+use PDO;
+
 /**
  * @author timrodger
  */
@@ -25,7 +27,7 @@ class Factory
 
     /**
      * If an in-memory or unavailable store has been explicitly configured
-     * then use that, otherwise use redis
+     * then use that, otherwise use RDBMS
      *
      * @return StoreInterface
      */
@@ -38,7 +40,14 @@ class Factory
         } else if ('UNAVAILABLE' == $dsn) {
             return new UnavailableStore();
         } else {
-            return new RDBMSStore($dsn);
+            // create a PDO object
+            $user = $this->config->getStoreUserName();
+            $pass = $this->config->getStorePassword();
+
+            $db = new PDO($dsn, $user, $pass);
+            // configure PDO to throw exceptions
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return new RDBMSStore($db);
         }
     }
 }
