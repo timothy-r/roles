@@ -39,7 +39,7 @@ class AppTest extends WebTestCase
 
     public function testPutAddsARole()
     {
-        $name = 'app.admin';
+        $name = 'app.admin123';
         $this->givenAClient();
 
         $this->client->request('PUT', '/roles/' . $name);
@@ -53,7 +53,7 @@ class AppTest extends WebTestCase
 
     public function testDeleteRemovesRole()
     {
-        $name = 'app.news-editor';
+        $name = 'app.special-news-editor';
         $this->givenAClient();
         $this->givenARoleExists($name);
 
@@ -79,7 +79,7 @@ class AppTest extends WebTestCase
     {
         $this->givenAClient();
 
-        $roles = ['app.user', 'app.admin','app.editor', 'app.super'];
+        $roles = ['app.user', 'app.administrator','app.editor', 'app.super'];
         foreach($roles as $name) {
             $this->givenARoleExists($name);
         }
@@ -93,6 +93,52 @@ class AppTest extends WebTestCase
         foreach($actual as $actual_name){
             $this->assertTrue(in_array($actual_name, $roles));
         }
+    }
+
+    public function testAddMemberToRole()
+    {
+        $role = 'app:xxx.super';
+        $member = 'urn:app:account.user.999';
+
+        $this->givenAClient();
+        $this->givenARoleExists($role);
+
+        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
+        $this->thenTheResponseIsSuccess();
+
+        $this->client->request('GET', '/roles/' . $role . '/members/' . $member);
+        $this->thenTheResponseIsSuccess();
+    }
+
+    public function testGetMemberBelongsToRoleFailsWhenItDoesnt()
+    {
+        $role = 'app:yyy.browser';
+        $member = 'urn:app:account.user.111';
+
+        $this->givenAClient();
+        $this->client->request('GET', '/roles/' . $role . '/members/' . $member);
+        $this->thenTheResponseIs404();
+    }
+
+    public function testRemoveMemberFromRole()
+    {
+        $role = 'service:abc.editor';
+        $member = 'urn:app:account.user.88';
+
+        $this->givenAClient();
+        $this->givenARoleExists($role);
+
+        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
+        $this->thenTheResponseIsSuccess();
+
+        $this->client->request('GET', '/roles/' . $role . '/members/' . $member);
+        $this->thenTheResponseIsSuccess();
+
+        $this->client->request('DELETE', '/roles/' . $role . '/members/' . $member);
+        $this->thenTheResponseIsSuccess();
+
+        $this->client->request('GET', '/roles/' . $role . '/members/' . $member);
+        $this->thenTheResponseIs404();
     }
 
     private function givenAClient()

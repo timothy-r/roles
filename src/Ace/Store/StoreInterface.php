@@ -18,5 +18,7 @@ interface StoreInterface
 
     public function addMember($role, $member);
 
+    public function memberBelongsToRole($role, $member);
+
     public function removeMember($role, $member);
 }

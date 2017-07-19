@@ -112,6 +112,15 @@ class RDBMSStore implements StoreInterface
      * @param $role
      * @param $member
      */
+    public function memberBelongsToRole($role, $member)
+    {
+
+    }
+
+    /**
+     * @param $role
+     * @param $member
+     */
     public function removeMember($role, $member)
     {
 

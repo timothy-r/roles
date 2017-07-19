@@ -57,6 +57,15 @@ class Unavailable implements StoreInterface
      * @param $role
      * @param $member
      */
+    public function memberBelongsToRole($role, $member)
+    {
+        throw new UnavailableException('Store is not available');
+    }
+
+    /**
+     * @param $role
+     * @param $member
+     */
     public function removeMember($role, $member)
     {
         throw new UnavailableException('Store is not available');
