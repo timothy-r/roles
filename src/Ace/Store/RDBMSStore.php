@@ -55,11 +55,10 @@ class RDBMSStore implements StoreInterface
     public function get($role)
     {
         try {
-            $sql = "SELECT name FROM roles WHERE name = '$role';";
+            $sql = "SELECT id, name, description FROM roles WHERE name = '$role';";
             $results = $this->db->query($sql);
-            $rows = $results->fetchAll();
-            if (count($rows)){
-                return $rows[0];
+            if ($roleData = $results->fetch(PDO::FETCH_ASSOC)){
+                return $roleData;
             } else {
                 throw new NotFoundException("Role '$role' does not exist'");
             }
@@ -69,15 +68,15 @@ class RDBMSStore implements StoreInterface
     }
 
     /**
-     * @return array of role names
+     * @return array of roles
      */
     public function listAll()
     {
         try {
             $roles = [];
-            $sql = "SELECT name FROM roles;";
-            foreach($this->db->query($sql) as $result) {
-                $roles[] = $result['name'];
+            $sql = "SELECT * FROM roles;";
+            foreach($this->db->query($sql, PDO::FETCH_ASSOC) as $result) {
+                $roles[] = $result;
             }
             return $roles;
         } catch (PDOException $ex){
@@ -126,7 +125,7 @@ class RDBMSStore implements StoreInterface
     {
         try {
             // test if role exists, throws exception if missing
-            $this->get($role);
+            $roleData = $this->get($role);
 
             // ensure member exists
             $addMemberSql = "INSERT INTO members (name) VALUES('$member');";
@@ -141,8 +140,10 @@ class RDBMSStore implements StoreInterface
 
         try {
             // insert roles_members bond
-            $addMemberToRoleSql = "INSERT INTO roles_members(member_id , role_id)
-                VALUES((SELECT id FROM members WHERE name = '$member'), (SELECT id FROM roles WHERE name = '$role'));";
+            $addMemberToRoleSql = sprintf("INSERT INTO roles_members(member_id , role_id)
+                VALUES((SELECT id FROM members WHERE name = '$member'), %d);",
+                $roleData['id']
+            );
 
             $this->db->exec($addMemberToRoleSql);
 
@@ -179,12 +180,14 @@ class RDBMSStore implements StoreInterface
     {
         try {
             // test if role & member exist, throws exception if missing
-            $this->get($role);
-            $this->getMember($member);
+            $roleData = $this->get($role);
+            $memberData = $this->getMember($member);
 
-            $sql = "SELECT * FROM roles_members
-              WHERE role_id = (SELECT id FROM roles WHERE name = '$role')
-              AND member_id = (SELECT id FROM members WHERE name = '$member');";
+            $sql = sprintf("SELECT * FROM roles_members
+              WHERE role_id = %d
+              AND member_id = %d;",
+                $roleData['id'],
+                $memberData['id']);
             $results = $this->db->query($sql);
 
             return ($results->rowCount() === 1);
@@ -202,12 +205,15 @@ class RDBMSStore implements StoreInterface
     {
         try {
             // test if role & member exist, throws exception if missing
-            $this->get($role);
-            $this->getMember($member);
+            $roleData = $this->get($role);
+            $memberData = $this->getMember($member);
 
-            $sql = "DELETE FROM roles_members
-              WHERE role_id = (SELECT id FROM roles WHERE name = '$role')
-              AND member_id = (SELECT id FROM members WHERE name = '$member');";
+            $sql = sprintf("DELETE FROM roles_members
+              WHERE role_id = %d
+              AND member_id = %d;",
+                $roleData['id'],
+                $memberData['id']
+            );
             $this->db->query($sql);
 
         } catch (PDOException $ex){

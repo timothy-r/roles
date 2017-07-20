@@ -118,10 +118,7 @@ class IntegrationTest extends WebTestCase
         $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
         $this->givenAClient();
         $this->givenARoleExists($role);
-
-        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
-
-        $this->thenTheResponseIsSuccess();
+        $this->givenMemberBelongsToRole($role, $member);
 
         $this->assertMemberBelongsToRole($role, $member);
     }
@@ -140,12 +137,8 @@ class IntegrationTest extends WebTestCase
         $role = 'app.admin.' . rand(0, PHP_INT_MAX);
         $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
         $this->givenAClient();
-
         $this->givenARoleExists($role);
-
-        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
-
-        $this->thenTheResponseIsSuccess();
+        $this->givenMemberBelongsToRole($role, $member);
 
         $this->client->request('DELETE', '/roles/' . $role . '/members/' . $member);
 
@@ -211,6 +204,13 @@ class IntegrationTest extends WebTestCase
     private function givenARoleExists($role)
     {
         $this->client->request('PUT', '/roles/' . $role);
+    }
+
+    private function givenMemberBelongsToRole($role, $member)
+    {
+        $this->client->request('PUT', '/roles/' . $role . '/members/' . $member);
+
+        $this->thenTheResponseIsSuccess();
     }
 
 }

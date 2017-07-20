@@ -37,7 +37,7 @@ class RouteProvider implements ServiceProviderInterface
             $app['logger']->info("Getting '$role'");
 
             $role = $app['role.store']->get($role);
-            return new Response(json_encode([$role], JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
+            return new Response(json_encode($role, JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
         })->assert('path', '.+');
 
         /**
