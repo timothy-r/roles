@@ -38,7 +38,7 @@ class RouteProvider implements ServiceProviderInterface
 
             $role = $app['role.store']->get($role);
             return new Response(json_encode([$role], JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
-        });
+        })->assert('path', '.+');
 
         /**
          * Add a role
@@ -50,7 +50,7 @@ class RouteProvider implements ServiceProviderInterface
             $app['role.store']->set($role);
 
             return new Response(json_encode(["role" => $role], JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
-        });
+        })->assert('path', '.+');
 
         /**
          * Removes a role
@@ -62,7 +62,7 @@ class RouteProvider implements ServiceProviderInterface
             $app['role.store']->delete($role);
 
             return new Response('', 200);
-        });
+        })->assert('path', '.+');
 
         /**
          * List role members
@@ -78,7 +78,7 @@ class RouteProvider implements ServiceProviderInterface
                 200,
                 ["Content-Type" => 'application/json']
             );
-        });
+        })->assert('path', '.+');
 
         /**
          * Add a member to a role
@@ -94,7 +94,7 @@ class RouteProvider implements ServiceProviderInterface
                 200,
                 ["Content-Type" => 'application/json']
             );
-        });
+        })->assert('path', '.+');
 
         /**
          * Test if a member belongs to a role
@@ -112,7 +112,7 @@ class RouteProvider implements ServiceProviderInterface
             } else {
                 return new Response('{}', 404, ["Content-Type" => 'application/json']);
             }
-        });
+        })->assert('path', '.+');
 
         /**
          * Remove a member from a role
@@ -128,6 +128,6 @@ class RouteProvider implements ServiceProviderInterface
                 200,
                 ["Content-Type" => 'application/json']
             );
-        });
+        })->assert('path', '.+');
     }
 }
