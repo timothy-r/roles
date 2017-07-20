@@ -34,8 +34,10 @@ class ErrorHandlerProvider implements ServiceProviderInterface
                     break;
             }
 
-
-            return new Response(json_encode(['message' => $message]), $code);
+            return new Response(
+                json_encode(['message' => $message]),
+                $code,
+                ['Content-Type' => 'application/json']);
         });
 
     }
