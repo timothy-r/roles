@@ -6,7 +6,6 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Configures routing
@@ -57,50 +56,21 @@ class RouteProvider implements ServiceProviderInterface
          * Add a member to a role
          */
         $app->put("/roles/{role}/members/{member}", function(Request $req, $role, $member) use ($app) {
-
-            $app['logger']->info("Adding member '$member' to role '$role'");
-
-            $app['role.store']->addMember($role, $member);
-
-            return new Response(
-                json_encode(["role" => $role, "member" => $member], JSON_UNESCAPED_SLASHES),
-                200,
-                ["Content-Type" => 'application/json']
-            );
+            return $app['role.controller']->addMemberToRole($role, $member);
         })->assert('path', '.+');
 
         /**
          * Test if a member belongs to a role
          */
         $app->get("/roles/{role}/members/{member}", function(Request $req, $role, $member) use ($app) {
-
-            $app['logger']->info("Getting member '$member' for role '$role'");
-
-            if ($app['role.store']->memberBelongsToRole($role, $member)) {
-                return new Response(
-                    json_encode(["role" => $role, "member" => $member], JSON_UNESCAPED_SLASHES),
-                    200,
-                    ["Content-Type" => 'application/json']
-                );
-            } else {
-                return new Response('{}', 404, ["Content-Type" => 'application/json']);
-            }
+            return $app['role.controller']->memberBelongsToRole($role, $member);
         })->assert('path', '.+');
 
         /**
          * Remove a member from a role
          */
         $app->delete("/roles/{role}/members/{member}", function(Request $req, $role, $member) use ($app) {
-
-            $app['logger']->info("Removing member '$member' from role '$role'");
-
-            $app['role.store']->removeMember($role, $member);
-
-            return new Response(
-                json_encode('{}', JSON_UNESCAPED_SLASHES),
-                200,
-                ["Content-Type" => 'application/json']
-            );
+            $app['role.controller']->removeMemberFromRole($role, $member);
         })->assert('path', '.+');
     }
 }

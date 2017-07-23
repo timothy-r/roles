@@ -1,5 +1,6 @@
 <?php namespace Ace\Controller;
 
+use Ace\Store\NotFoundException;
 use Ace\Store\StoreInterface;
 use Monolog\Logger;
 
@@ -94,6 +95,46 @@ class RoleController
         $members = $this->store->getMembers($role);
         // add member urls
         return $members;
+    }
+
+    /**
+     * @param $role
+     * @param $member
+     * @return array
+     */
+    public function addMemberToRole($role, $member)
+    {
+        $this->logger->info("Adding member '$member' to role '$role'");
+        $this->store->addMember($role, $member);
+        return ["role" => $role, "member" => $member];
+    }
+
+    /**
+     * @param $role
+     * @param $member
+     * @return array
+     */
+    public function memberBelongsToRole($role, $member)
+    {
+        $this->logger->info("Getting member '$member' for role '$role'");
+
+        if ($this->store->memberBelongsToRole($role, $member)) {
+            return ["role" => $role, "member" => $member];
+        } else {
+            throw new NotFoundException("Member '$member' does not belong to role '$role'");
+        }
+    }
+
+    /**
+     * @param $role
+     * @param $member
+     * @return string
+     */
+    public function removeMemberFromRole($role, $member)
+    {
+        $this->logger->info("Removing member '$member' from role '$role'");
+        $this->store->removeMember($role, $member);
+        return '';
     }
 
     /**
