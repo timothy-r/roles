@@ -22,46 +22,28 @@ class RouteProvider implements ServiceProviderInterface
          * Respond with a list of roles
          */
         $app->get("/roles", function(Request $req) use ($app){
-
-            $app['logger']->info("Getting list of roles");
-
-            return $app['role.store']->listAll();
-            return new Response(json_encode($roles, JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
+            return $app['role.controller']->listRoles();
         });
 
         /**
          * Access a role - test it exists
          */
         $app->get("/roles/{role}", function(Request $req, $role) use ($app){
-
-            $app['logger']->info("Getting '$role'");
-
-            $role = $app['role.store']->get($role);
-            return new Response(json_encode($role, JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
+            return $app['role.controller']->getRole($role);
         })->assert('path', '.+');
 
         /**
          * Add a role
          */
         $app->put("/roles/{role}", function(Request $req, $role) use ($app) {
-
-            $app['logger']->info("Setting role '$role'");
-
-            $app['role.store']->set($role);
-
-            return new Response(json_encode(["role" => $role], JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
+            return $app['role.controller']->addRole($role);
         })->assert('path', '.+');
 
         /**
          * Removes a role
          */
         $app->delete("/roles/{role}", function($role) use ($app) {
-
-            $app['logger']->info("Removing role '$role'");
-
-            $app['role.store']->delete($role);
-
-            return new Response('', 200);
+            return $app['role.controller']->deleteRole($role);
         })->assert('path', '.+');
 
         /**

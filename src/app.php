@@ -9,6 +9,7 @@ use Ace\Provider\ErrorHandlerProvider;
 use Ace\Provider\ConfigurationProvider;
 use Ace\Provider\ContentNegotiationProvider;
 use Ace\Provider\ViewProvider;
+use Ace\Provider\RoleControllerProvider;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -25,7 +26,7 @@ $app->register(new ContentNegotiationProvider());
 $app->register(new ViewProvider());
 $app->register(new StoreProvider());
 $app->register(new RouteProvider());
-
+$app->register(new RoleControllerProvider());
 
 // debug env vars during development
 /*
