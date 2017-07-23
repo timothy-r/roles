@@ -90,10 +90,10 @@ class AppTest extends WebTestCase
 
         $this->thenTheResponseIsSuccess();
 
-        $actual = json_decode($this->client->getResponse()->getContent(), true);
+        $actualRoles = json_decode($this->client->getResponse()->getContent(), true);
 
-        foreach($actual as $actual_name){
-            $this->assertTrue(in_array($actual_name, $roles));
+        foreach($actualRoles as $actualRole){
+            $this->assertTrue(in_array($actualRole['name'], $roles));
         }
     }
 

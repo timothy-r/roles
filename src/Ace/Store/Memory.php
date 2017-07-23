@@ -20,7 +20,7 @@ class Memory implements StoreInterface
     public function set($role)
     {
         if (!isset($this->data[$role])) {
-            $this->data[$role] = [];
+            $this->data[$role] = ['name' => $role];
         }
     }
 
@@ -30,7 +30,7 @@ class Memory implements StoreInterface
     public function get($role)
     {
         if (isset($this->data[$role])) {
-            return $role;
+            return $this->data[$role];
         } else {
             throw new NotFoundException("Role '$role' not found");
         }
@@ -41,7 +41,7 @@ class Memory implements StoreInterface
      */
     public function listAll()
     {
-        return array_keys($this->data);
+        return array_values($this->data);
     }
 
     /**

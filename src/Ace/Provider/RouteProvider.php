@@ -50,16 +50,7 @@ class RouteProvider implements ServiceProviderInterface
          * List role members
          */
         $app->get("/roles/{role}/members", function(Request $req, $role) use ($app) {
-
-            $app['logger']->info("List members of role '$role'");
-
-            $members = $app['role.store']->getMembers($role);
-
-            return new Response(
-                json_encode($members, JSON_UNESCAPED_SLASHES),
-                200,
-                ["Content-Type" => 'application/json']
-            );
+            return $app['role.controller']->listRoleMembers($role);
         })->assert('path', '.+');
 
         /**

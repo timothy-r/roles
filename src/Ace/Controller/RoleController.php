@@ -39,7 +39,11 @@ class RoleController
     {
         $this->logger->info("Getting list of roles");
         // replace db ids with urls
-        return $this->store->listAll();
+        $result = [];
+        foreach($this->store->listAll() as $roleData){
+            $result []= $this->convertRoleIdToUrl($roleData);
+        }
+        return $result;
     }
 
     /**
@@ -50,7 +54,9 @@ class RoleController
     {
         $this->logger->info("Getting '$role'");
         // replace db id with url
-        return $this->store->get($role);
+        $roleData = $this->store->get($role);
+        $roleData = $this->convertRoleIdToUrl($roleData);
+        return $roleData;
     }
 
     /**
@@ -62,10 +68,10 @@ class RoleController
     {
         $this->logger->info("Adding role '$role'");
         $this->store->set($role);
-        $data = ['name' => $role, 'description' => $description];
-
+        $roleData = ['name' => $role, 'description' => $description];
+        $roleData = $this->convertRoleIdToUrl($roleData);
         // return url & role data
-        return $data;
+        return $roleData;
     }
 
     /**
@@ -76,5 +82,33 @@ class RoleController
         $this->logger->info("Removing role '$role'");
         $this->store->delete($role);
         return '';
+    }
+
+    /**
+     * @param $role
+     * @return array
+     */
+    public function listRoleMembers($role)
+    {
+        $this->logger->info("List members of role '$role'");
+        $members = $this->store->getMembers($role);
+        // add member urls
+        return $members;
+    }
+
+    /**
+     * move to a helper class?
+     *
+     * @param array $roleData
+     * @return array
+     */
+    private function convertRoleIdToUrl(array $roleData)
+    {
+        if (isset($roleData['id'])){
+            $roleData['url'] = 'https://role.service.net/roles/' . $roleData['name'];
+            unset($roleData['id']);
+        }
+
+        return $roleData;
     }
 }

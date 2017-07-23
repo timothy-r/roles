@@ -2,6 +2,7 @@
 
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,7 +18,13 @@ class ViewProvider implements ServiceProviderInterface
          */
         $app->view(function (array $controllerResult, Request $request) use ($app) {
 
-            return new JsonResponse($controllerResult);
+            // return new JsonResponse($controllerResult);
+
+            return new Response(
+                json_encode($controllerResult, JSON_UNESCAPED_SLASHES),
+                200,
+                ["Content-Type" => 'application/json']
+            );
 
             /**
              * implement conn neg later
