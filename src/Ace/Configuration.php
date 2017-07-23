@@ -38,4 +38,13 @@ class Configuration
     {
         return getenv('RDS_PASSWORD');
     }
+
+    /**
+     * Return the host name to generate urls to endpoints
+     * @return string
+     */
+    public function getServiceHostName()
+    {
+        return 'roles.service.net';
+    }
 }

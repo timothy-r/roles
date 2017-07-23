@@ -15,6 +15,6 @@ class StoreProvider implements ServiceProviderInterface
 
     public function register(Container $app)
     {
-        $app['role.store'] = (new StoreFactory(new Configuration()))->create();
+        $app['role.store'] = (new StoreFactory($app['config']))->create();
     }
 }

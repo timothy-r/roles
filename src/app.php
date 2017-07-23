@@ -6,6 +6,7 @@ use Silex\Provider\MonologServiceProvider;
 use Ace\Provider\StoreProvider;
 use Ace\Provider\RouteProvider;
 use Ace\Provider\ErrorHandlerProvider;
+use Ace\Provider\ConfigurationProvider;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -15,6 +16,7 @@ $app->register(new MonologServiceProvider());
 $app['monolog.logfile'] = "php://stdout";
 $app['monolog.name'] = 'roles';
 
+$app->register(new ConfigurationProvider());
 $app->register(new ErrorHandlerProvider());
 $app->register(new StoreProvider());
 $app->register(new RouteProvider());
