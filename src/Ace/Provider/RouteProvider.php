@@ -25,7 +25,7 @@ class RouteProvider implements ServiceProviderInterface
 
             $app['logger']->info("Getting list of roles");
 
-            $roles = $app['role.store']->listAll();
+            return $app['role.store']->listAll();
             return new Response(json_encode($roles, JSON_UNESCAPED_SLASHES), 200, ["Content-Type" => 'application/json']);
         });
 

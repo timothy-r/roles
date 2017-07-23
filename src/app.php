@@ -7,6 +7,8 @@ use Ace\Provider\StoreProvider;
 use Ace\Provider\RouteProvider;
 use Ace\Provider\ErrorHandlerProvider;
 use Ace\Provider\ConfigurationProvider;
+use Ace\Provider\ContentNegotiationProvider;
+use Ace\Provider\ViewProvider;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -18,8 +20,12 @@ $app['monolog.name'] = 'roles';
 
 $app->register(new ConfigurationProvider());
 $app->register(new ErrorHandlerProvider());
+$app->register(new ContentNegotiationProvider());
+
+$app->register(new ViewProvider());
 $app->register(new StoreProvider());
 $app->register(new RouteProvider());
+
 
 // debug env vars during development
 /*

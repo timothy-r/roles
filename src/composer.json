@@ -6,7 +6,8 @@
         "symfony/browser-kit": "^3.3",
         "monolog/monolog": "^1.23",
         "doctrine/orm": "^2.5",
-        "symfony/doctrine-bridge": "^3.3"
+        "symfony/doctrine-bridge": "^3.3",
+        "willdurand/negotiation": "^2.3"
 
     },
     "require-dev": {
