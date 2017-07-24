@@ -72,6 +72,22 @@ class IntegrationTest extends WebTestCase
         $this->assertRoleExists($role);
     }
 
+    public function testPutCanBeCalledMoreThanOnce()
+    {
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+
+        $this->client->request('PUT', '/roles/' . $role);
+        $this->thenTheResponseIsSuccess();
+        $this->assertRoleExists($role);
+
+        $this->client->request('PUT', '/roles/' . $role);
+        $this->thenTheResponseIsSuccess();
+
+        $this->client->request('PUT', '/roles/' . $role);
+        $this->thenTheResponseIsSuccess();
+    }
+
     public function testGetMembers()
     {
         $role = 'app.admin.' . rand(0, PHP_INT_MAX);

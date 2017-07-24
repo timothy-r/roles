@@ -34,18 +34,16 @@ class RDBMSStore implements StoreInterface
     public function setRole($role, $description = '')
     {
         try {
-            $exists = $this->getRole($role);
-            return true;
-
-        } catch (NotFoundException $ex) {
-            // role does not exist so create it
-        }
-
-        try {
             $sql = "INSERT INTO roles (name, description) VALUES('$role', '$description');";
             $this->db->exec($sql);
         } catch (PDOException $ex){
-            throw new UnavailableException($ex->getMessage(), null, $ex);
+            if ('23505' == $ex->getCode()){
+                // unique_violation, role exists, set description
+                $sql = "UPDATE roles SET description = '$description' WHERE name = '$name'";
+                $this->db->exec($sql);
+            } else {
+                throw new UnavailableException($ex->getMessage(), null, $ex);
+            }
         }
     }
 
@@ -73,12 +71,8 @@ class RDBMSStore implements StoreInterface
     public function listRoles()
     {
         try {
-            $roles = [];
             $sql = "SELECT * FROM roles;";
-            foreach($this->db->query($sql, PDO::FETCH_ASSOC) as $result) {
-                $roles[] = $result;
-            }
-            return $roles;
+            return $this->db->query($sql, PDO::FETCH_ASSOC);
         } catch (PDOException $ex){
             throw new UnavailableException($ex->getMessage(), null, $ex);
         }
@@ -104,16 +98,13 @@ class RDBMSStore implements StoreInterface
     {
         try {
             $roleData = $this->getRole($role);
-            $members = [];
 
-            $sql = sprintf("SELECT * FROM members WHERE id in (SELECT member_id from roles_members where role_id = %d);",
+            $sql = sprintf(
+                "SELECT * FROM members WHERE id in (SELECT member_id from roles_members where role_id = %d);",
                 $roleData['id']
             );
 
-            foreach($this->db->query($sql, PDO::FETCH_ASSOC) as $result) {
-                $members[] = $result;
-            }
-            return $members;
+            return $this->db->query($sql, PDO::FETCH_ASSOC) ;
         } catch (PDOException $ex){
             throw new UnavailableException($ex->getMessage(), null, $ex);
         }
@@ -231,17 +222,12 @@ class RDBMSStore implements StoreInterface
     {
         try {
             $memberData = $this->getMember($member);
-            $roles = [];
 
             $sql = sprintf("SELECT * FROM roles WHERE id in (SELECT role_id from roles_members where member_id = %d);",
                 $memberData['id']
             );
 
-            foreach($this->db->query($sql, PDO::FETCH_ASSOC) as $result) {
-                $roles[] = $result;
-            }
-            return $roles;
-
+            return $this->db->query($sql, PDO::FETCH_ASSOC);
         } catch (PDOException $ex){
             throw new UnavailableException($ex->getMessage(), null, $ex);
         }
