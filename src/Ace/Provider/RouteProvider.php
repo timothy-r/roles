@@ -20,57 +20,41 @@ class RouteProvider implements ServiceProviderInterface
         /**
          * Respond with a list of roles
          */
-        $app->get("/roles", function(Request $req) use ($app){
-            return $app['role.controller']->listRoles();
-        });
+        $app->get("/roles", 'role.controller:listRoles');
 
         /**
          * Access a role - test it exists
          */
-        $app->get("/roles/{role}", function(Request $req, $role) use ($app){
-            return $app['role.controller']->getRole($role);
-        })->assert('path', '.+');
+        $app->get("/roles/{role}", 'role.controller:getRole')->assert('path', '.+');
 
         /**
          * Add a role
          */
-        $app->put("/roles/{role}", function(Request $req, $role) use ($app) {
-            return $app['role.controller']->addRole($role);
-        })->assert('path', '.+');
+        $app->put("/roles/{role}", 'role.controller:addRole')->assert('path', '.+');
 
         /**
          * Removes a role
          */
-        $app->delete("/roles/{role}", function($role) use ($app) {
-            return $app['role.controller']->deleteRole($role);
-        })->assert('path', '.+');
+        $app->delete("/roles/{role}", 'role.controller:deleteRole')->assert('path', '.+');
 
         /**
          * List role members
          */
-        $app->get("/roles/{role}/members", function(Request $req, $role) use ($app) {
-            return $app['role.controller']->listRoleMembers($role);
-        })->assert('path', '.+');
+        $app->get("/roles/{role}/members", 'role.controller:listRoleMembers')->assert('path', '.+');
 
         /**
          * Add a member to a role
          */
-        $app->put("/roles/{role}/members/{member}", function(Request $req, $role, $member) use ($app) {
-            return $app['role.controller']->addMemberToRole($role, $member);
-        })->assert('path', '.+');
+        $app->put("/roles/{role}/members/{member}", 'role.controller:addMemberToRole')->assert('path', '.+');
 
         /**
          * Test if a member belongs to a role
          */
-        $app->get("/roles/{role}/members/{member}", function(Request $req, $role, $member) use ($app) {
-            return $app['role.controller']->memberBelongsToRole($role, $member);
-        })->assert('path', '.+');
+        $app->get("/roles/{role}/members/{member}", 'role.controller:memberBelongsToRole')->assert('path', '.+');
 
         /**
          * Remove a member from a role
          */
-        $app->delete("/roles/{role}/members/{member}", function(Request $req, $role, $member) use ($app) {
-            $app['role.controller']->removeMemberFromRole($role, $member);
-        })->assert('path', '.+');
+        $app->delete("/roles/{role}/members/{member}", 'role.controller:removeMemberFromRole')->assert('path', '.+');
     }
 }

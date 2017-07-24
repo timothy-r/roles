@@ -2,6 +2,7 @@
 
 use Silex\Application;
 use Silex\Provider\MonologServiceProvider;
+use Silex\Provider\ServiceControllerServiceProvider;
 
 use Ace\Provider\StoreProvider;
 use Ace\Provider\RouteProvider;
@@ -18,6 +19,7 @@ $app = new Application();
 $app->register(new MonologServiceProvider());
 $app['monolog.logfile'] = "php://stdout";
 $app['monolog.name'] = 'roles';
+$app->register(new ServiceControllerServiceProvider());
 
 $app->register(new ConfigurationProvider());
 $app->register(new ErrorHandlerProvider());
@@ -27,6 +29,8 @@ $app->register(new ViewProvider());
 $app->register(new StoreProvider());
 $app->register(new RouteProvider());
 $app->register(new RoleControllerProvider());
+
+
 
 // debug env vars during development
 /*

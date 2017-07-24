@@ -11,6 +11,8 @@ class RoleControllerProvider implements ServiceProviderInterface
 {
     public function register(Container $app)
     {
-        $app['role.controller'] = new RoleController($app['role.store'], $app['logger']);
+        $app['role.controller'] = function() use ($app) {
+            return new RoleController($app['role.store'], $app['logger']);
+        };
     }
 }

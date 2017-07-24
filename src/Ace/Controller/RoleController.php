@@ -3,6 +3,7 @@
 use Ace\Store\NotFoundException;
 use Ace\Store\StoreInterface;
 use Monolog\Logger;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class RoleController
