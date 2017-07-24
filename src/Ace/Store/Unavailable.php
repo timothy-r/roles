@@ -77,4 +77,9 @@ class Unavailable implements StoreInterface
     {
         throw new UnavailableException('Store is not available');
     }
+
+    public function listMemberRoles($member)
+    {
+        throw new UnavailableException('Store is not available');
+    }
 }

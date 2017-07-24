@@ -56,5 +56,10 @@ class RouteProvider implements ServiceProviderInterface
          * Remove a member from a role
          */
         $app->delete("/roles/{role}/members/{member}", 'role.controller:removeMemberFromRole')->assert('path', '.+');
+
+        /**
+         * List the roles a member belongs to
+         */
+        $app->get("/members/{member}/roles", 'role.controller:listMemberRoles')->assert('path', '.+');
     }
 }

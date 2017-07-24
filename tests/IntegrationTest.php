@@ -158,6 +158,27 @@ class IntegrationTest extends WebTestCase
         $this->thenTheResponseIs404();
     }
 
+    public function testListMemberRoles()
+    {
+        $role = 'app.admin.' . rand(0, PHP_INT_MAX);
+        $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+        $this->givenARoleExists($role);
+        $this->givenMemberBelongsToRole($role, $member);
+
+        $this->client->request('GET', '/members/' . $member . '/roles');
+        $this->thenTheResponseIsSuccess();
+    }
+
+    public function testListMemberRolesRespondsWith404ForMissingMember()
+    {
+        $member = 'urn:app:account.user.' . rand(0, PHP_INT_MAX);
+        $this->givenAClient();
+
+        $this->client->request('GET', '/members/' . $member . '/roles');
+        $this->thenTheResponseIs404();
+    }
+
     private function assertRoleExists($role)
     {
         $this->client->request('GET', '/roles/' . $role);

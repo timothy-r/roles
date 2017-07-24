@@ -93,9 +93,12 @@ class RoleController
     public function listRoleMembers($role)
     {
         $this->logger->info("List members of role '$role'");
-        $members = $this->store->getRoleMembers($role);
         // add member urls
-        return $members;
+        $result = [];
+        foreach($this->store->getRoleMembers($role) as $memberData){
+            $result []= $this->convertMemberIdToUrl($memberData);
+        }
+        return $result;
     }
 
     /**
@@ -139,6 +142,20 @@ class RoleController
     }
 
     /**
+     * @param $member
+     * @return array
+     */
+    public function listMemberRoles($member)
+    {
+        $this->logger->info("List the roles member '$member' belongs to");
+        $result = [];
+        foreach($this->store->listMemberRoles($member) as $roleData){
+            $result []= $this->convertRoleIdToUrl($roleData);
+        }
+        return $result;
+    }
+
+    /**
      * move to a helper class?
      *
      * @param array $roleData
@@ -152,5 +169,21 @@ class RoleController
         }
 
         return $roleData;
+    }
+
+    /**
+     * move to a helper class?
+     *
+     * @param array $roleData
+     * @return array
+     */
+    private function convertMemberIdToUrl(array $memberData)
+    {
+        if (isset($memberData['id'])){
+            $memberData['url'] = 'https://role.service.net/members/' . $memberData['name'];
+            unset($memberData['id']);
+        }
+
+        return $memberData;
     }
 }

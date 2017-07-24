@@ -101,4 +101,9 @@ class Memory implements StoreInterface
             unset($this->data[$role][$member]);
         }
     }
+
+    public function listMemberRoles($member)
+    {
+
+    }
 }
