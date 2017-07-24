@@ -31,10 +31,10 @@ class RDBMSStore implements StoreInterface
      *
      * @param $role
      */
-    public function set($role)
+    public function setRole($role)
     {
         try {
-            $exists = $this->get($role);
+            $exists = $this->getRole($role);
             return true;
 
         } catch (NotFoundException $ex) {
@@ -52,7 +52,7 @@ class RDBMSStore implements StoreInterface
     /**
      * @param $role
      */
-    public function get($role)
+    public function getRole($role)
     {
         try {
             $sql = "SELECT id, name, description FROM roles WHERE name = '$role';";
@@ -70,7 +70,7 @@ class RDBMSStore implements StoreInterface
     /**
      * @return array of roles
      */
-    public function listAll()
+    public function listRoles()
     {
         try {
             $roles = [];
@@ -87,7 +87,7 @@ class RDBMSStore implements StoreInterface
     /**
      * @param $role
      */
-    public function delete($role)
+    public function deleteRole($role)
     {
         try {
             $sql = "DELETE FROM roles WHERE name = '$role';";
@@ -100,15 +100,18 @@ class RDBMSStore implements StoreInterface
     /**
      * @param $role
      */
-    public function getMembers($role)
+    public function getRoleMembers($role)
     {
         try {
-            $this->get($role);
+            $roleData = $this->getRole($role);
             $members = [];
 
-            $sql = "SELECT name FROM members WHERE id in (SELECT member_id from roles_members where role_id = (select id from roles where name = '$role')); ";
-            foreach($this->db->query($sql) as $result) {
-                $members[] = $result['name'];
+            $sql = sprintf("SELECT * FROM members WHERE id in (SELECT member_id from roles_members where role_id = %d);",
+                $roleData['id']
+            );
+
+            foreach($this->db->query($sql, PDO::FETCH_ASSOC) as $result) {
+                $members[] = $result;
             }
             return $members;
         } catch (PDOException $ex){
@@ -121,11 +124,11 @@ class RDBMSStore implements StoreInterface
      * @param $role
      * @param $member
      */
-    public function addMember($role, $member)
+    public function addMemberToRole($role, $member)
     {
         try {
             // test if role exists, throws exception if missing
-            $roleData = $this->get($role);
+            $roleData = $this->getRole($role);
 
             // ensure member exists
             $addMemberSql = "INSERT INTO members (name) VALUES('$member');";
@@ -180,7 +183,7 @@ class RDBMSStore implements StoreInterface
     {
         try {
             // test if role & member exist, throws exception if missing
-            $roleData = $this->get($role);
+            $roleData = $this->getRole($role);
             $memberData = $this->getMember($member);
 
             $sql = sprintf("SELECT * FROM roles_members
@@ -201,11 +204,11 @@ class RDBMSStore implements StoreInterface
      * @param $role
      * @param $member
      */
-    public function removeMember($role, $member)
+    public function removeMemberFromRole($role, $member)
     {
         try {
             // test if role & member exist, throws exception if missing
-            $roleData = $this->get($role);
+            $roleData = $this->getRole($role);
             $memberData = $this->getMember($member);
 
             $sql = sprintf("DELETE FROM roles_members

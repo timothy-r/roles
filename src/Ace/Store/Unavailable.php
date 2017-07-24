@@ -13,7 +13,7 @@ class Unavailable implements StoreInterface
      *
      * @param $role
      */
-    public function set($role)
+    public function setRole($role)
     {
         throw new UnavailableException('Store is not available');
     }
@@ -21,7 +21,7 @@ class Unavailable implements StoreInterface
     /**
      * @param $role
      */
-    public function get($role)
+    public function getRole($role)
     {
         throw new UnavailableException('Store is not available');
     }
@@ -29,7 +29,7 @@ class Unavailable implements StoreInterface
     /**
      * @throws UnavailableException
      */
-    public function listAll()
+    public function listRoles()
     {
         throw new UnavailableException('Store is not available');
     }
@@ -38,7 +38,7 @@ class Unavailable implements StoreInterface
      * @param $role
      * @throws UnavailableException
      */
-    public function delete($role)
+    public function deleteRole($role)
     {
         throw new UnavailableException('Store is not available');
     }
@@ -46,7 +46,7 @@ class Unavailable implements StoreInterface
     /**
      * @param $role
      */
-    public function getMembers($role)
+    public function getRoleMembers($role)
     {
         throw new UnavailableException('Store is not available');
     }
@@ -55,7 +55,7 @@ class Unavailable implements StoreInterface
      * @param $role
      * @param $member
      */
-    public function addMember($role, $member)
+    public function addMemberToRole($role, $member)
     {
         throw new UnavailableException('Store is not available');
     }
@@ -73,7 +73,7 @@ class Unavailable implements StoreInterface
      * @param $role
      * @param $member
      */
-    public function removeMember($role, $member)
+    public function removeMemberFromRole($role, $member)
     {
         throw new UnavailableException('Store is not available');
     }

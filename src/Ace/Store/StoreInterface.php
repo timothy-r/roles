@@ -8,19 +8,19 @@ namespace Ace\Store;
  */
 interface StoreInterface
 {
-    public function set($role);
+    public function setRole($role);
 
-    public function get($role);
+    public function getRole($role);
 
-    public function listAll();
+    public function listRoles();
 
-    public function delete($role);
+    public function deleteRole($role);
 
-    public function getMembers($role);
+    public function getRoleMembers($role);
 
-    public function addMember($role, $member);
+    public function addMemberToRole($role, $member);
 
     public function memberBelongsToRole($role, $member);
 
-    public function removeMember($role, $member);
+    public function removeMemberFromRole($role, $member);
 }

@@ -17,7 +17,7 @@ class Memory implements StoreInterface
      *
      * @param $role
      */
-    public function set($role)
+    public function setRole($role)
     {
         if (!isset($this->data[$role])) {
             $this->data[$role] = ['name' => $role];
@@ -27,7 +27,7 @@ class Memory implements StoreInterface
     /**
      * @param $role
      */
-    public function get($role)
+    public function getRole($role)
     {
         if (isset($this->data[$role])) {
             return $this->data[$role];
@@ -39,7 +39,7 @@ class Memory implements StoreInterface
     /**
      * @return array
      */
-    public function listAll()
+    public function listRoles()
     {
         return array_values($this->data);
     }
@@ -47,7 +47,7 @@ class Memory implements StoreInterface
     /**
      * @param $role
      */
-    public function delete($role)
+    public function deleteRole($role)
     {
         unset($this->data[$role]);
     }
@@ -55,7 +55,7 @@ class Memory implements StoreInterface
     /**
      * @param $role
      */
-    public function getMembers($role)
+    public function getRoleMembers($role)
     {
         if (isset($this->data[$role])) {
             return array_keys($this->data[$role]);
@@ -68,10 +68,10 @@ class Memory implements StoreInterface
      * @param $role
      * @param $member
      */
-    public function addMember($role, $member)
+    public function addMemberToRole($role, $member)
     {
         // ensure role exists
-        $this->set($role);
+        $this->setRole($role);
 
         // make delete easier by storing the member as the key & value
         $this->data[$role] [$member]= $member;
@@ -95,7 +95,7 @@ class Memory implements StoreInterface
      * @param $role
      * @param $member
      */
-    public function removeMember($role, $member)
+    public function removeMemberFromRole($role, $member)
     {
         if (isset($this->data[$role])) {
             unset($this->data[$role][$member]);

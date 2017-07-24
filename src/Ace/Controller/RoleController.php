@@ -42,7 +42,7 @@ class RoleController
         $this->logger->info("Getting list of roles");
         // replace db ids with urls
         $result = [];
-        foreach($this->store->listAll() as $roleData){
+        foreach($this->store->listRoles() as $roleData){
             $result []= $this->convertRoleIdToUrl($roleData);
         }
         return $result;
@@ -56,7 +56,7 @@ class RoleController
     {
         $this->logger->info("Getting '$role'");
         // replace db id with url
-        $roleData = $this->store->get($role);
+        $roleData = $this->store->getRole($role);
         $roleData = $this->convertRoleIdToUrl($roleData);
         return $roleData;
     }
@@ -69,7 +69,7 @@ class RoleController
     public function addRole($role, $description = '')
     {
         $this->logger->info("Adding role '$role'");
-        $this->store->set($role);
+        $this->store->setRole($role);
         $roleData = ['name' => $role, 'description' => $description];
         $roleData = $this->convertRoleIdToUrl($roleData);
         // return url & role data
@@ -82,7 +82,7 @@ class RoleController
     public function deleteRole($role)
     {
         $this->logger->info("Removing role '$role'");
-        $this->store->delete($role);
+        $this->store->deleteRole($role);
         return '';
     }
 
@@ -93,7 +93,7 @@ class RoleController
     public function listRoleMembers($role)
     {
         $this->logger->info("List members of role '$role'");
-        $members = $this->store->getMembers($role);
+        $members = $this->store->getRoleMembers($role);
         // add member urls
         return $members;
     }
@@ -106,7 +106,7 @@ class RoleController
     public function addMemberToRole($role, $member)
     {
         $this->logger->info("Adding member '$member' to role '$role'");
-        $this->store->addMember($role, $member);
+        $this->store->addMemberToRole($role, $member);
         return ["role" => $role, "member" => $member];
     }
 
@@ -134,7 +134,7 @@ class RoleController
     public function removeMemberFromRole($role, $member)
     {
         $this->logger->info("Removing member '$member' from role '$role'");
-        $this->store->removeMember($role, $member);
+        $this->store->removeMemberFromRole($role, $member);
         return '';
     }
 
